@@ -1,22 +1,22 @@
 import { ethers } from 'ethers'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import Safe, {
+  EthersAdapter,
+  SafeAccountConfig,
+  encodeSetupCallData,
+  getSafeContract,
+} from '@safe-global/protocol-kit'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { encodeSetupCallDataProps } from '@safe-global/protocol-kit/dist/src/contracts/utils'
 
-// https://chainlist.org
-
-const provider = new ethers.providers.JsonRpcProvider('') // use wagmi
+const provider = new ethers.providers.JsonRpcProvider('') // TODO: use wagmi instead here
 
 async function paymaster(amount: string) {
   const safeAddress = localStorage.getItem('safeAddress')!
-  //private key of the safe
-  // const signer = new ethers.Wallet(safeAddress, provider)
 
-  // Any address can be used for destination. In this example, we use vitalik.eth
   const destinationAddress = safeAddress
   const withdrawAmount = ethers.utils.parseUnits(amount, 'usdc').toString()
 
-  // Create a transactions array with one transaction object
   const transactions: MetaTransactionData[] = [
     {
       to: destinationAddress,
@@ -27,7 +27,7 @@ async function paymaster(amount: string) {
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    signerOrProvider: provider.getSigner(), //wagmi signer,
+    signerOrProvider: provider.getSigner(), // TODO: need to change to wagmi signer,
   })
 
   const safeSDK = await Safe.create({
@@ -43,6 +43,19 @@ async function paymaster(amount: string) {
   })
 
   const signedSafeTransaction = await safeSDK.signTransaction(safeTransaction)
+
+  let safeAccountConfig: SafeAccountConfig = {
+    owners: ['0x...'], // TODO: need to change to owner address
+    threshold: 1,
+  }
+
+  const encodedData: encodeSetupCallDataProps = {
+    ethAdapter,
+    safeAccountConfig,
+    safeContract: await getSafeContract({ ethAdapter, safeVersion: '1.3.0' }),
+  }
+
+  await encodeSetupCallData(encodedData)
 
   const response = await relayKit.executeRelayTransaction(
     signedSafeTransaction,
