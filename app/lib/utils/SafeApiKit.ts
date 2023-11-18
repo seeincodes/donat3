@@ -31,6 +31,7 @@ async function createSafe(ownerAddress: string) {
 
   if (predictSafeAddress !== null) {
     safeAccountConfig.owners[0] = predictSafeAddress
+    localStorage.setItem('safeAddress', predictSafeAddress)
   }
 
   const safe = await safeFactory.deploySafe({
