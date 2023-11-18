@@ -13,19 +13,23 @@ const ethAdapter = new EthersAdapter({
   signerOrProvider: safeOwner,
 })
 
-const txServiceUrl = 'https://safe-transaction-mainnet.safe.global'
+async function createSafe(ownerAddress: string) {
+  const txServiceUrl = 'https://safe-transaction-mainnet.safe.global'
 
-const safeFactory = await SafeFactory.create({ ethAdapter })
-// safeAccountConfig, saltNonce, options, callback
+  const safeFactory = await SafeFactory.create({ ethAdapter })
+  // safeAccountConfig, saltNonce, options, callback
 
-const owner1Signer = new ethers.Wallet('Wallet', provider)
+  const owner1Signer = new ethers.Wallet('Wallet', provider)
 
-const safeAccountConfig: SafeAccountConfig = {
-  owners: [await owner1Signer.getAddress()],
-  threshold: 2,
-  // ... (Optional params)
+  const safeAccountConfig: SafeAccountConfig = {
+    owners: [await owner1Signer.getAddress()],
+    threshold: 2,
+    // ... (Optional params)
+  }
+
+  const safe = await safeFactory.deploySafe({
+    safeAccountConfig,
+  })
+
+  return safe
 }
-
-const safe = await safeFactory.deploySafe({
-  safeAccountConfig,
-})
