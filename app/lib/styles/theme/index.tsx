@@ -34,7 +34,7 @@ const bg = {
 }
 
 const config: ThemeConfig = {
-  initialColorMode: 'dark',
+  initialColorMode: 'light',
   // useSystemColorMode: false,
 }
 
