@@ -1,8 +1,9 @@
 'use client'
 
-import { Image, useColorMode } from '@chakra-ui/react'
+import { useColorMode } from '@chakra-ui/react'
 import { useAppContext } from '@/providers'
 import { dark, light } from '@/lib/styles/theme'
+import Image from 'next/image'
 
 export default function InitialOverlay() {
   const isHydrated = useAppContext().isHydrated
@@ -26,7 +27,7 @@ export default function InitialOverlay() {
         top: !isHydrated ? '0' : '-100%',
       }}
     >
-      <Image src="/donat3-logo.png" width={82} height={82} alt="" />
+      <Image src="/donat3-logo.png" width={100} height={100} alt="" />
     </div>
   )
 }

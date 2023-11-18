@@ -103,8 +103,8 @@ export default function ConnectorProvider({
 }: {
   children: React.ReactNode
 }) {
-  const { colorMode } = useColorMode()
-  const { theme, globalCss } = getRainbowTheme(colorMode === 'light')
+  // const { colorMode } = useColorMode() // TODO Solve undefined ret
+  const { theme, globalCss } = getRainbowTheme(true)
   return (
     <WagmiConfig config={wagmiConfig}>
       <Global styles={globalCss} />
@@ -114,30 +114,3 @@ export default function ConnectorProvider({
     </WagmiConfig>
   )
 }
-
-// export default function ConnectorProvider({
-//   children,
-// }: {
-//   children: React.ReactNode
-// }) {
-//   const { colorMode } = useColorMode()
-//   const isLight = colorMode === 'light'
-//   const { cssOverrides, shadowDomOverWrites } = getDynamicTheme(isLight)
-
-//   // RENDER
-//   return (
-//     <>
-//       <Global styles={shadowDomOverWrites} />
-//       <DynamicContextProvider
-//         settings={{
-//           environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ID || '',
-//           cssOverrides,
-//           walletConnectors: [EthereumWalletConnectors, MagicWalletConnectors],
-//           evmNetworks,
-//         }}
-//       >
-//         <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
-//       </DynamicContextProvider>
-//     </>
-//   )
-// }

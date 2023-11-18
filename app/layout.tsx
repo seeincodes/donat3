@@ -5,6 +5,9 @@ import { InitialOverlay, RouteProgressBar } from './components'
 import '@fontsource/open-sans/500.css'
 import './lib/styles/global.css'
 import '@rainbow-me/rainbowkit/styles.css'
+import { IconButton } from '@chakra-ui/react'
+import Link from 'next/link'
+import { AiOutlineHome } from 'react-icons/ai'
 
 const { description, title, applicationName, images } = {
   title: 'Web3 Template',
@@ -55,6 +58,15 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <Providers>
           <RouteProgressBar />
           <InitialOverlay />
+          <IconButton
+            pos={'absolute'}
+            top={3}
+            right={3}
+            icon={<AiOutlineHome />}
+            as={Link}
+            href={'/'}
+            aria-label="go_home"
+          />
           <div className="layout-body">
             {/* CONTENT */}
             <div className="content">{children}</div>
