@@ -1,3 +1,4 @@
+'use client'
 import { ethers } from 'ethers'
 import {
   EthersAdapter,
@@ -13,8 +14,8 @@ const ethAdapter = new EthersAdapter({
   signerOrProvider: safeOwner,
 })
 
-async function createSafe(ownerAddress: string) {
-  const txServiceUrl = 'https://safe-transaction-mainnet.safe.global'
+export async function createSafe(ownerAddress: string) {
+  //   const txServiceUrl = 'https://safe-transaction-mainnet.safe.global'
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
 
