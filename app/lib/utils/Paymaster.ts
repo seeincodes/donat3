@@ -4,48 +4,52 @@ import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 // https://chainlist.org
-const RPC_URL = 'https://endpoints.omniatech.io/v1/bsc/mainnet/public'
-const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
-const signer = new ethers.Wallet(process.env.OWNER_1_PRIVATE_KEY!, provider)
-const safeAddress = localStorage.getItem('safeAddress')!
 
-// Any address can be used for destination. In this example, we use vitalik.eth
-const destinationAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
-const withdrawAmount = ethers.utils.parseUnits('0.005', 'ether').toString()
+const provider = new ethers.providers.JsonRpcProvider('') // use wagmi
 
-// Create a transactions array with one transaction object
-const transactions: MetaTransactionData[] = [
-  {
-    to: destinationAddress,
-    data: '0x',
-    value: withdrawAmount,
-  },
-]
+async function paymaster(amount: string) {
+  const safeAddress = localStorage.getItem('safeAddress')!
+  //private key of the safe
+  // const signer = new ethers.Wallet(safeAddress, provider)
 
-const ethAdapter = new EthersAdapter({
-  ethers,
-  signerOrProvider: signer,
-})
+  // Any address can be used for destination. In this example, we use vitalik.eth
+  const destinationAddress = safeAddress
+  const withdrawAmount = ethers.utils.parseUnits(amount, 'usdc').toString()
 
-const safeSDK = await Safe.create({
-  ethAdapter,
-  safeAddress,
-})
+  // Create a transactions array with one transaction object
+  const transactions: MetaTransactionData[] = [
+    {
+      to: destinationAddress,
+      data: '0x',
+      value: withdrawAmount,
+    },
+  ]
 
-const relayKit = new GelatoRelayPack()
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signerOrProvider: provider.getSigner(), //wagmi signer,
+  })
 
-const safeTransaction = await relayKit.createRelayedTransaction({
-  safe: safeSDK,
-  transactions,
-})
+  const safeSDK = await Safe.create({
+    ethAdapter,
+    safeAddress,
+  })
 
-const signedSafeTransaction = await safeSDK.signTransaction(safeTransaction)
+  const relayKit = new GelatoRelayPack()
 
-const response = await relayKit.executeRelayTransaction(
-  signedSafeTransaction,
-  safeSDK
-)
+  const safeTransaction = await relayKit.createRelayedTransaction({
+    safe: safeSDK,
+    transactions,
+  })
 
-console.log(
-  `Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`
-)
+  const signedSafeTransaction = await safeSDK.signTransaction(safeTransaction)
+
+  const response = await relayKit.executeRelayTransaction(
+    signedSafeTransaction,
+    safeSDK
+  )
+
+  console.log(
+    `Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`
+  )
+}
