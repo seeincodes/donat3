@@ -1,2 +1,2 @@
 export { default as theme } from './theme'
-export * from './dynamicTheme'
+export * from './rainbowTheme'
