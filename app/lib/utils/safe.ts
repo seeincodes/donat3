@@ -71,7 +71,7 @@ const getProvider = (chainKey: ChainKeys) => {
 export async function getSafeWalletAddress(ownerAddress?: `0x${string}`) {
   if (!ownerAddress) return null
   // const signerOrProvider = walletClientToSigner(safeOwnerClient)
-  const provider = getEthersProvider({ chainId: ChainId.EthSepolia })
+  const provider = getEthersProvider('EthSepolia')
   const signerOrProvider = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
 
   const ethAdapter = new EthersAdapter({
@@ -115,7 +115,7 @@ async function handleBatchDeploySafeWithPaymaster(ownerAddress: `0x${string}`) {
 
   const response = await Promise.all(
     keys.map(async (k) => {
-      const provider = getEthersProvider({ chainId: ChainId[k] })
+      const provider = getEthersProvider(k)
       const factoryAddress = SafeFactoryAddress[k]
       return await deploySafeWithPaymaster({
         saltNonce,
