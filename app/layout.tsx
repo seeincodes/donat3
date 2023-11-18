@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Providers from './providers'
-import { InitialOverlay, RouteProgressBar, Navbar } from './components'
+import { InitialOverlay, RouteProgressBar } from './components'
 import '@fontsource/open-sans/500.css'
 import './lib/styles/global.css'
 import '@rainbow-me/rainbowkit/styles.css'
@@ -56,7 +56,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           <RouteProgressBar />
           <InitialOverlay />
           <div className="layout-body">
-            <Navbar />
             {/* CONTENT */}
             <div className="content">{children}</div>
           </div>
