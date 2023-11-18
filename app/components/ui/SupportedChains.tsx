@@ -6,7 +6,7 @@ import { Stack, Flex, Text } from '@chakra-ui/react'
 export default function SupportedChains() {
   const imgUrls = ['ethereum', 'bsc', 'base', 'polygon', 'optimism', 'arbitrum']
   return (
-    <Stack>
+    <Stack mb={2}>
       <Text>Supported Chains</Text>
       <Flex>
         {imgUrls.map((i) => (

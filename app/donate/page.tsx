@@ -24,7 +24,7 @@ export default function Donate() {
       <div className="header">
         <Hero />
       </div>
-      <Card variant={'info'} mt={3}>
+      <Card variant={'info'}>
         <CardHeader>Donate with Crypto</CardHeader>
         <CardBody>
           <form

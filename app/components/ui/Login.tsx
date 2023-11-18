@@ -16,7 +16,7 @@ export default function Login() {
         const connected = ready && account && chain
 
         return (
-          <div>
+          <>
             {(() => {
               if (!ready)
                 return <Skeleton borderRadius={'xl'} w={'160px'} h={8} />
@@ -51,7 +51,7 @@ export default function Login() {
                 </Flex>
               )
             })()}
-          </div>
+          </>
         )
       }}
     </ConnectButton.Custom>
