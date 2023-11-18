@@ -85,7 +85,7 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      rainbowWallet({ projectId: '04309ed1007e77d1f119b85205bb779d', chains }),
+      // rainbowWallet({ projectId: '04309ed1007e77d1f119b85205bb779d', chains }),
       rainbowWeb3AuthConnector(chains),
       metaMaskWallet({ projectId: '04309ed1007e77d1f119b85205bb779d', chains }),
     ],

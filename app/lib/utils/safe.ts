@@ -7,10 +7,23 @@ import {
   MetaTransactionData,
   MetaTransactionOptions,
 } from '@safe-global/safe-core-sdk-types'
-import { ChainKeys, ChainRpcUrl, SafeFactoryAddress } from '../types/base'
+import {
+  ChainId,
+  ChainKeys,
+  ChainRpcUrl,
+  SafeFactoryAddress,
+} from '../types/base'
 import { random } from './basics'
-import { WalletClient } from 'wagmi'
-import { walletClientToSigner } from './ethers'
+import { Chain, WalletClient } from 'wagmi'
+import { getEthersProvider, walletClientToSigner } from './ethers'
+import { baseGoerli, sepolia } from 'viem/chains'
+
+const threadTracker = new Map<
+  `0x${string}`,
+  {
+    idle: boolean
+  }
+>()
 
 // const withdrawAmount = ethers.utils.parseUnits(amountUSDC, '6').toString()
 // const safeContract = await getSafeContract({
@@ -35,12 +48,30 @@ type DeploySafeWithPaymaster = {
   moduleAddress?: `0x${string}`
 }
 
-export async function getSafeWalletAddress(
-  ownerAddress?: `0x${string}` /* safeOwnerClient: WalletClient */
-) {
-  if (!ownerAddress) return undefined
+const getProvider = (chainKey: ChainKeys) => {
+  // switch (chainKey) {
+  //   case 'BaseGoerli':
+  //     return baseGoerli
+  //   case 'EthSepolia':
+  //     return sepolia
+  // }
+  // const provider = new ethers.providers.JsonRpcProvider(
+  //   ChainRpcUrl[chainKey],
+  //   (() => {
+  //     switch (chainKey) {
+  //       case 'BaseGoerli':
+  //         return baseGoerli
+  //       case 'EthSepolia':
+  //         return sepolia
+  //     }
+  //   })()
+  // )
+}
+
+export async function getSafeWalletAddress(ownerAddress?: `0x${string}`) {
+  if (!ownerAddress) return null
   // const signerOrProvider = walletClientToSigner(safeOwnerClient)
-  const provider = new ethers.providers.JsonRpcProvider(ChainRpcUrl.EthSepolia)
+  const provider = getEthersProvider({ chainId: ChainId.EthSepolia })
   const signerOrProvider = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
 
   const ethAdapter = new EthersAdapter({
@@ -62,15 +93,33 @@ export async function batchDeploySafeWithPaymaster(
   ownerAddress: `0x${string}` | undefined
 ) {
   if (!ownerAddress) return undefined
+  const threadHasAddress = threadTracker.has(ownerAddress)
+
+  if (!threadHasAddress) threadTracker.set(ownerAddress, { idle: true })
+
+  if (!threadTracker.get(ownerAddress)!.idle) return undefined
+
+  try {
+    threadTracker.set(ownerAddress, { idle: false })
+    const response = await handleBatchDeploySafeWithPaymaster(ownerAddress)
+
+    return response
+  } finally {
+    threadTracker.set(ownerAddress, { idle: true })
+  }
+}
+
+async function handleBatchDeploySafeWithPaymaster(ownerAddress: `0x${string}`) {
   const keys: ChainKeys[] = ['BaseGoerli', 'EthSepolia']
   const saltNonce = String(random(0, 99999999, false))
 
   const response = await Promise.all(
     keys.map(async (k) => {
-      const provider = new ethers.providers.JsonRpcProvider(ChainRpcUrl[k])
+      const provider = getEthersProvider({ chainId: ChainId[k] })
       const factoryAddress = SafeFactoryAddress[k]
       return await deploySafeWithPaymaster({
         saltNonce,
+        // @ts-ignore
         provider,
         factoryAddress,
         ownerAddress,
