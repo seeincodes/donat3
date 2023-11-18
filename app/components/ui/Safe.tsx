@@ -1,3 +1,4 @@
+'use client'
 import { createSafe } from '@/lib/utils/SafeApiKit'
 import { FormControl, FormLabel, Input, Button } from '@chakra-ui/react'
 import { useState } from 'react'
@@ -7,7 +8,7 @@ export default function CreateSafe() {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-    createSafe(ownerAddress)
+    await createSafe(ownerAddress)
   }
 
   return (

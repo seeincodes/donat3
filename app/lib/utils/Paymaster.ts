@@ -4,12 +4,13 @@ import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 // https://chainlist.org
-const RPC_URL = 'https://endpoints.omniatech.io/v1/bsc/mainnet/public'
-const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
+
+const provider = new ethers.providers.JsonRpcProvider('') // use wagmi
 
 async function paymaster(amount: string) {
   const safeAddress = localStorage.getItem('safeAddress')!
-  const signer = new ethers.Wallet(safeAddress, provider)
+  //private key of the safe
+  // const signer = new ethers.Wallet(safeAddress, provider)
 
   // Any address can be used for destination. In this example, we use vitalik.eth
   const destinationAddress = safeAddress
@@ -26,7 +27,7 @@ async function paymaster(amount: string) {
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    signerOrProvider: signer,
+    signerOrProvider: provider.getSigner(), //wagmi signer,
   })
 
   const safeSDK = await Safe.create({

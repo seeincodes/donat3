@@ -20,6 +20,9 @@ export default function HomePage() {
             <Button as={Link} href="/raise">
               Raise Crypto
             </Button>
+            <Button as={Link} href="/test">
+              Test Crypto
+            </Button>
           </Stack>
         </CardBody>
       </Card>
