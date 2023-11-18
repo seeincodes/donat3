@@ -1,11 +1,11 @@
 'use client'
 
 import { Box, Button, Flex, useColorModeValue } from '@chakra-ui/react'
-import { DynamicWidget } from '@dynamic-labs/sdk-react-core'
 import { Link } from '@chakra-ui/next-js'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import NextLink from 'next/link'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 export default function Navbar() {
   const borderColor = useColorModeValue('light.border', 'dark.border')
@@ -23,7 +23,7 @@ export default function Navbar() {
             height={42}
           />
         </NextLink>
-        <DynamicWidget variant="modal" />
+        <ConnectButton />
       </Flex>
 
       <Flex
