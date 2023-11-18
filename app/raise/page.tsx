@@ -17,6 +17,7 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
+  Spinner,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -24,7 +25,7 @@ import { useAccount, useQuery } from 'wagmi'
 
 export default function Raise() {
   const router = useRouter()
-  const { address, isDisconnected } = useAccount()
+  const { address } = useAccount()
   const [isDeploying, setIsDeploying] = useState(false)
   const [name, setName] = useState<string>('')
 
@@ -38,15 +39,18 @@ export default function Raise() {
     }
   )
 
+  const isLoading =
+    isDeploying || safeAddress.isFetching || safeAddress.isLoading
+
   useEffect(() => {
-    if (!isDisconnected && !isDeploying && !safeAddress) {
+    if (!isLoading && !address && !safeAddress) {
       setIsDeploying(true)
       batchDeploySafeWithPaymaster(address).finally(() => {
         setIsDeploying(false)
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDisconnected, safeAddress, address])
+  }, [safeAddress, address])
 
   return (
     <>
@@ -63,7 +67,9 @@ export default function Raise() {
             }}
           >
             <Stack>
-              {isDisconnected ? (
+              {isLoading ? (
+                <Spinner m={'auto'} />
+              ) : !address ? (
                 <Login />
               ) : (
                 <Stack align={'center'} spacing={6}>
@@ -78,7 +84,7 @@ export default function Raise() {
                       <InputRightAddon>.donat3.eth</InputRightAddon>
                     </InputGroup>
                   </FormControl>
-                  <Button type="submit">Donat3</Button>
+                  <Button type="submit">Register</Button>
                 </Stack>
               )}
             </Stack>
