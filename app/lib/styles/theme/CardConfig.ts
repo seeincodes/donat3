@@ -10,11 +10,11 @@ const baseStyle = definePartsStyle({
     borderRadius: 'xl',
     border: '1px solid',
     borderColor: 'light.border !important',
-    boxShadow: `light`,
+    // boxShadow: `light`,
     _dark: {
       borderColor: 'dark.border !important',
-      boxShadow: `dark`,
       background: 'dark.primary.900',
+      // boxShadow: `dark`,
     },
   },
   header: {

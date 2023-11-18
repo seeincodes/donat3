@@ -26,7 +26,7 @@ export default function InitialOverlay() {
         top: !isHydrated ? '0' : '-100%',
       }}
     >
-      <Image src="/inverter-light-logo.svg" height={90} width={90} alt="" />
+      <Image src="/donat3-logo.png" width={82} height={82} alt="" />
     </div>
   )
 }

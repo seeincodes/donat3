@@ -18,7 +18,7 @@ body,
   overflow-x: hidden;
 }
 
-.navbar {
+.header {
   grid-row: 1;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,11 @@ body,
 }
 
 .content {
+  padding: 1.5rem;
+}
+
+.content,
+.sub-content {
   grid-row: 2;
   overflow: hidden scroll;
-  padding: 1.5rem;
 }
