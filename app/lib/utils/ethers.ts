@@ -2,10 +2,11 @@ import {
   type WalletClient,
   type PublicClient,
   getWalletClient,
-  getPublicClient,
 } from '@wagmi/core'
 import { providers } from 'ethers'
-import { type HttpTransport } from 'viem'
+import { http, type HttpTransport, createPublicClient } from 'viem'
+import { ChainKeys } from '../types/base'
+import { baseGoerli, sepolia } from 'viem/chains'
 
 export function walletClientToSigner(walletClient: WalletClient) {
   const { account, chain, transport } = walletClient
@@ -43,7 +44,19 @@ export function publicClientToProvider(publicClient: PublicClient) {
 }
 
 /** Action to convert a viem Public Client to an ethers.js Provider. */
-export function getEthersProvider({ chainId }: { chainId?: number } = {}) {
-  const publicClient = getPublicClient({ chainId })
+export function getEthersProvider(chainKey: ChainKeys) {
+  const publicClient = createPublicClient({
+    chain: (() => {
+      switch (chainKey) {
+        case 'BaseGoerli':
+          return baseGoerli
+
+        default:
+          return sepolia
+      }
+    })(),
+    transport: http(),
+  })
+  // @ts-ignore
   return publicClientToProvider(publicClient)
 }
