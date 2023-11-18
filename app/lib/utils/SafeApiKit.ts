@@ -17,14 +17,20 @@ async function createSafe(ownerAddress: string) {
   const txServiceUrl = 'https://safe-transaction-mainnet.safe.global'
 
   const safeFactory = await SafeFactory.create({ ethAdapter })
-  // safeAccountConfig, saltNonce, options, callback
 
-  const owner1Signer = new ethers.Wallet('Wallet', provider)
+  const owner1Signer = new ethers.Wallet(ownerAddress, provider)
 
-  const safeAccountConfig: SafeAccountConfig = {
+  let safeAccountConfig: SafeAccountConfig = {
     owners: [await owner1Signer.getAddress()],
-    threshold: 2,
+    threshold: 1,
     // ... (Optional params)
+  }
+
+  const predictSafeAddress =
+    await safeFactory.predictSafeAddress(safeAccountConfig)
+
+  if (predictSafeAddress !== null) {
+    safeAccountConfig.owners[0] = predictSafeAddress
   }
 
   const safe = await safeFactory.deploySafe({
