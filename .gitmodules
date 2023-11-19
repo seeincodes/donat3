@@ -1,0 +1,3 @@
+[submodule "ccip-contracts"]
+	path = ccip-contracts
+	url = git@github.com:jozer-rami/ccip-starter-kit-donat3.git
