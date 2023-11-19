@@ -110,7 +110,7 @@ export async function batchDeploySafeWithPaymaster(
 }
 
 async function handleBatchDeploySafeWithPaymaster(ownerAddress: `0x${string}`) {
-  const keys: ChainKeys[] = ['BaseGoerli', 'EthSepolia']
+  const keys: ChainKeys[] = ['BaseGoerli', 'EthSepolia', 'Matic']
   const saltNonce = String(random(0, 99999999, false))
 
   const response = await Promise.all(
