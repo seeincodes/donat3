@@ -20,7 +20,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useAccount, useQuery, useSignMessage } from 'wagmi'
 import { WorkerRequest, postToCloudflare } from './actions'
 
@@ -28,17 +28,19 @@ export default function Raise() {
   const router = useRouter()
   const { address } = useAccount()
   const [isDeploying, setIsDeploying] = useState(false)
-  const [name, setName] = useState<string>('')
+  const [name, setName] = useState<string>('main')
 
   const safeAddress = useQuery(
     ['safeAddress', address],
-    () => {
-      return getSafeWalletAddress(address)
+    async () => {
+      return await getSafeWalletAddress(address)
     },
     {
-      refetchInterval: 10_000,
+      refetchInterval: 30_000,
     }
   )
+
+  const hasSafe = !!safeAddress.data && !!safeAddress.data.safes.length
 
   const isLoading =
     isDeploying || safeAddress.isFetching || safeAddress.isLoading
@@ -56,15 +58,17 @@ export default function Raise() {
     },
   }
 
-  useEffect(() => {
-    if (!isLoading && !address && !safeAddress) {
+  const initSafe = async () => {
+    if (!!address && !hasSafe && !isLoading) {
       setIsDeploying(true)
-      batchDeploySafeWithPaymaster(address).finally(() => {
+      await batchDeploySafeWithPaymaster(address).finally(() => {
         setIsDeploying(false)
       })
+
+      // TODO
+      router.push(`/donate/${name}`)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safeAddress, address])
+  }
 
   return (
     <>
@@ -81,7 +85,7 @@ export default function Raise() {
                 message: `Register ${name}.donat3.eth`,
               })
               postToCloudflare(requestBody)
-              router.push(`/donate/${name}`)
+              router.push(`/raise/${name}`)
             }}
           >
             <Stack>
@@ -89,6 +93,8 @@ export default function Raise() {
                 <Spinner m={'auto'} />
               ) : !address ? (
                 <Login />
+              ) : !hasSafe ? (
+                <Button onClick={initSafe}>Setup Your Safe</Button>
               ) : (
                 <Stack align={'center'} spacing={6}>
                   <FormControl isRequired>
