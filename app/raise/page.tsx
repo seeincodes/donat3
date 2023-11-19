@@ -70,7 +70,7 @@ export default function Raise() {
   async function postToCloudflare() {
     try {
       const response = await fetch(
-        'https://ens-gateway.seeinplays.workers.dev',
+        'https://ens-gateway.seeinplays.workers.dev/set',
         {
           method: 'POST',
           headers: {
