@@ -77,8 +77,11 @@ export default function Raise() {
           <form
             onSubmit={(e) => {
               e.preventDefault()
+              signMessage({
+                message: `Register ${name}.donat3.eth`,
+              })
               postToCloudflare(requestBody)
-              // router.push(`/donate/${name}`)
+              router.push(`/donate/${name}`)
             }}
           >
             <Stack>
