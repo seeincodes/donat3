@@ -22,18 +22,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useAccount, useQuery, useSignMessage } from 'wagmi'
-
-export interface WorkerRequest {
-  name: string
-  owner: string
-  addresses?: Record<string, string | undefined> | undefined
-  texts?: Record<string, string | undefined> | undefined
-  contenthash?: string | undefined
-  signature: {
-    message: string
-    hash: string
-  }
-}
+import { WorkerRequest, postToCloudflare } from './actions'
 
 export default function Raise() {
   const router = useRouter()
@@ -67,30 +56,6 @@ export default function Raise() {
     },
   }
 
-  async function postToCloudflare() {
-    try {
-      const response = await fetch(
-        'https://ens-gateway.seeinplays.workers.dev/set',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`)
-      }
-
-      const responseData = await response.json()
-      return responseData
-    } catch (error) {
-      console.error('Failed to post data:', error)
-    }
-  }
-
   useEffect(() => {
     if (!isLoading && !address && !safeAddress) {
       setIsDeploying(true)
@@ -112,8 +77,8 @@ export default function Raise() {
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              postToCloudflare()
-              router.push(`/donate/${name}`)
+              postToCloudflare(requestBody)
+              // router.push(`/donate/${name}`)
             }}
           >
             <Stack>
