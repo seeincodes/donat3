@@ -1,0 +1,12 @@
+name = "ens-gateway"
+main = "src/index.ts"
+compatibility_date = "2023-03-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ens_subdomain"
+database_id = "d59f0d65-f91e-4df4-8b62-a5d7c3b27fe3"
+
+# The necessary secrets are:
+# - PRIVATE_KEY
+# Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
